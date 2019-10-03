@@ -1,0 +1,23 @@
+{
+    "name": "moly/framework",
+    "description": "Mly Framework",
+    "authors": [
+        {
+            "name": "Karthikesan Uthirapathy",
+            "email": "karthi.php.developer@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+          "Moly\\Foundation\\":"Foundation",
+          "Moly\\Contracts\\":"Foundation/Contracts",
+          "Moly\\Factory\\":"Foundation/Factory",
+          "Moly\\Supports\\Facades\\":"Foundation/Supports\\Facades\\",
+          "Moly\\Core\\Route\\":"Foundation\\Core\\Routes\\",
+          "Moly\\Core\\Request\\":"Foundation\\Core\\Request\\",
+          "Moly\\Core\\View\\":"Foundation\\Core\\View\\",
+          "Moly\\Providers\\":"Foundation\\Providers\\"
+        }
+    }
+}

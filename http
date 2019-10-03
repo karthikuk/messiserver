@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+use Moly\Server\HTTPServer;
+use Moly\Server\MessiServer;
+
+
+require 'vendor/autoload.php';
+
+$app = require_once 'echo.php';
+
+
+array_shift( $argv );
+
+$port = empty($argv) ? 80 : array_shift( $argv );
+
+
+
+
+$server = new HTTPServer($app, '127.0.0.1', $port);
+
+
+
+$server->listen(function($request, $response) {   
+    return $response;
+});
+
