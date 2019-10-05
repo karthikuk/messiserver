@@ -15,7 +15,8 @@
         }
     },
     "require": {
-        "symfony/var-dumper": "^4.3"
+        "symfony/var-dumper": "^4.3",
+        "symfony/psr-http-message-bridge": "^1.2"
     },
     "require-dev": {
         "symfony/web-server-bundle": "^4.3"

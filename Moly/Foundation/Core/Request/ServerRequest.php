@@ -81,13 +81,19 @@ abstract class ServerRequest  {
         {
           
             $line = trim( $line );
-
+            
             if ( strpos( $line, ': ' ) !== false )
             {
                 list( $key, $value ) = explode( ': ', $line );
 
                 $this->headers[$key] = $value;
             }
+            else
+            {
+                if($line) $this->parseParameters($line);
+            }
+
+           // echo $line ." \r \n";
         }   
 
         return $this;

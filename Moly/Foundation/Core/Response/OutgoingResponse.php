@@ -66,7 +66,7 @@ class OutgoingResponse
     protected $body= null;  
     protected $headers = [];  
 
-    public function __construct($body, $status = null )
+    public function __construct($body = null, $status = null )
     {
         if ( !is_null( $status ) )
         {
@@ -106,6 +106,17 @@ class OutgoingResponse
         }
         
         return implode( " \r\n", $lines )."\r\n\r\n";
+    }
+
+    public function redirect($uri, $permanent = false)
+    {
+        $baseUrl = '127.0.0.1:8000';
+
+        $uri = $baseUrl . $uri;
+
+        header('Location: ' . $uri, true, 302);
+
+      
     }
 
 

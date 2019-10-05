@@ -82,46 +82,26 @@ class HTTPServer {
 
       
 
-        
+     
         
         while ($client = stream_socket_accept($this->socket)) {
             
             
          
-
+          
 
             $clientBuffer = stream_socket_recvfrom($client, 65536);
             
            
 
           
-         
-            var_dump($clientBuffer);
-            print_r(stream_get_meta_data($client));
-            //var_dump($contents);
-        
-            
-            // $fp = fsockopen($this->host, $this->port, $errno, $errstr, 30);
-            // if (!$fp) {
-            //     echo "$errstr ($errno)<br />\n";
-            // } else {
-            //     $out = "GET / HTTP/1.1\r\n";
-            //     $out .= "Host: www.example.com\r\n";
-            //     $out .= "Connection: Close\r\n\r\n";
-            //     fwrite($fp, $out);
-            //     while (!feof($fp)) {
-            //         echo fgets($fp, 128);
-            //     }
-            //     fclose($fp);
-            // }
-
-           
             $response = "";
 
             if($clientBuffer)
             {   
                 $request = Request::requestHeaders( $clientBuffer );
 
+                var_dump($request->method());
             
                 echo $request->header('Host') . $request->uri() . " \r\n";
 
@@ -148,12 +128,18 @@ class HTTPServer {
            
             $response = (string) $response;
 
-            
             stream_socket_sendto($client, $response, STREAM_OOB);
-        
+
             stream_socket_shutdown($client, STREAM_SHUT_WR);
-          
+
             fclose($client);
+
+           
+            
+          
+           
+          
+            
         
                
         }

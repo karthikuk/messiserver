@@ -1,6 +1,8 @@
 <?php
 
+
 use Moly\Supports\Facades\Request;
+use Moly\Supports\Facades\Response;
 use Moly\Supports\Facades\Route;
 
 
@@ -47,7 +49,8 @@ Route::post('/postPizza', function () {
 
     var_dump($input);
 
-    echo 'redirect::>/products';   
+    Response::redirect('/products');
+    //echo 'redirect::>/products';   
 });
 
 
