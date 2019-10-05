@@ -1,4 +1,4 @@
-<form action="http://127.0.0.1:8000/postPizza" method="post">
+<form action="http://192.168.2.53:8000/postPizza" method="post" >
 
 
   <input type="hidden" name="_token" value="<?= csrf_token() ?>" />
@@ -9,4 +9,5 @@
 
   <input type="submit" name="submit" />
 </form> 
+
 

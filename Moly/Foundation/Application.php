@@ -1,4 +1,5 @@
 <?php
+
 namespace Moly\Foundation;
 
 use Moly\Foundation\Providers\FoundationProvider;

@@ -123,5 +123,16 @@ class IncomingRequest extends ServerRequest    {
 
         return $this->headers[$key];
     }
+
+
+    public function __get($name)
+    {
+        return $this->$name;
+    }
+
+    public function headers()
+    {
+        return $this->headers;
+    }
    
 }

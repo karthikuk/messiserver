@@ -5,6 +5,9 @@ namespace Moly\Core\Route;
 use Moly\Core\View\View;
 use Moly\Middleware\VerifyCsrfToken;
 use Moly\Supports\Facades\Request;
+use Moly\Supports\Facades\Response;
+use Moly\Server\Response\OutgoingResponse;
+
 
 interface RouterInterface 
 {
@@ -147,43 +150,16 @@ class Router implements RouterInterface
     public function next($request = null)
     {
 
-      
-       
-        
-
-        // exit;
-
-        //     $headers = apache_response_headers();
-        // var_dump($headers);
-       // dd($GLOBALS);
-        // $csrf = new VerifyCsrfToken;
-
-  
-        // $csrf->handle(Request::input(), function ($request) {
-        //    dd($request);
-        // });
-        
-        
-        // $uri =  $_SERVER["PATH_INFO"] ?? $_SERVER["REQUEST_URI"];
-        
-        
-        //$uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-
+    
         $uri = $request->uri();
 
 
-        $request = (new RouteObject($uri));
-    
-       
+        $request = $this->givenUriRequest($uri);
     
         
-        $segment = $request->isRootSlug() ? $request->uriString() : "/{$request->segment(0)}";
+        $segment = $this->resolveSegment($request);
 
-        
-    
-        
-        
-
+     
         if(!isset($this->routes[$segment]))
         {
             throw new \Moly\Exceptions\RouteNotFoundException;
@@ -192,7 +168,7 @@ class Router implements RouterInterface
         }
 
 
-        $matchedRoute = $this->routes[$segment];
+        $matchedRoute = $this->matchedRoute($segment);
        
 
         $matchedRoute->methodsAuthorized();
@@ -201,29 +177,51 @@ class Router implements RouterInterface
         if($matchedRoute->checkActionIsCallable())
         {
          
+                return $this->routeResponse($matchedRoute->action());  
+        }
+        else
+        {   
+            $reflections = new \Moly\Supports\Reflections(
+                                    $matchedRoute->accessorClass(), 
+                                    $matchedRoute->accessorMethod(), 
+                                    array_values($matchedRoute->bindRouteParams($request))
+                            );
+
+            return $this->routeResponse($reflections->instance());  
+             
+        }
+         
+    }
+
+    protected function givenUriRequest(string $uri) : RouteObject
+    {
+        return new RouteObject($uri);
+    }
+
+    protected function resolveSegment(RouteObject $request) : string
+    {
+        return $request->isRootSlug() ? $request->uriString() : "/{$request->segment(0)}";
+    }
+
+    protected function matchedRoute($segment) : RouteObject
+    {
+        return $this->routes[$segment];
+    }
+
+    protected function routeResponse($response): OutgoingResponse
+    {
+
        
-            //return function () use ($matchedRoute) {
-                return $matchedRoute->action();
-           // };
-            
+        if (!$response || !$response instanceof OutgoingResponse)
+        {
+
+            return Response::make(200, $response);
         }
 
         
-
-
-        $reflections = new \Moly\Supports\Reflections(
-                                $matchedRoute->accessorClass(), 
-                                $matchedRoute->accessorMethod(), 
-                                array_values($matchedRoute->bindRouteParams($request))
-                        );
         
 
-       // return function () use ($reflections) {
-            return $reflections->instance();
-
-       // };
-            
-                    
+        return $response;
     }
 
     public function getRoutes()

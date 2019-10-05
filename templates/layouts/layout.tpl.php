@@ -64,10 +64,22 @@
     
     <div class="col-sm-9">
         <?= $body ?>
+
+        
+    <div class="w3-container">
+      <h2>Rounded Images</h2>
+      <p>The w3-round classes add rounded corners to an image:</p>
+
+      <p>w3-round-small:</p>
+      <img src="http://192.168.2.53:8000/1.jpg" class="w3-round-small" alt="Norway" style="width:30%">
+
+     
+    </div>
     </div>
   </div>
 </div>
 
 </body>
 </html>
+
 

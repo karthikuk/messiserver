@@ -4,6 +4,7 @@ namespace Moly\Server;
 use Moly\Server\Request\ServerRequest;
 use Moly\Server\Response\OutgoingResponse;
 use Moly\Supports\Facades\Request;
+use Moly\Supports\Facades\Response;
 
 class HTTPServer {
 
@@ -56,21 +57,10 @@ class HTTPServer {
     
     protected function createStreamServer()  
     {   
-        // $opts = array('http' =>
-        //         array(
-        //             'method'  => 'POST',
-        //             'header'  => 'Content-type: application/x-www-form-urlencoded'
-        //         )
-        //     );
-          
-        // $context = stream_context_get_default ($opts);
-
-    
-
        
         $this->socket = stream_socket_server($this->host.":".$this->port, $errno, $errstr, STREAM_SERVER_BIND | STREAM_SERVER_LISTEN);
 
-        stream_set_blocking($this->socket, true);
+      
     }
 
   
@@ -80,71 +70,65 @@ class HTTPServer {
     {
 
 
-      
-
+    
+        
      
         
         while ($client = stream_socket_accept($this->socket)) {
             
             
-         
-          
-
             $clientBuffer = stream_socket_recvfrom($client, 65536);
             
-           
 
-          
+            var_dump($clientBuffer);
             $response = "";
 
             if($clientBuffer)
             {   
+
+                
                 $request = Request::requestHeaders( $clientBuffer );
-
-                var_dump($request->method());
-            
-                echo $request->header('Host') . $request->uri() . " \r\n";
-
-                if(!is_null($request->header('Sec-Fetch-User')) || $request->header('Sec-Fetch-Mode') == 'cors')
+                
+               
+                echo $request->method() . " " . $request->header('Host') . $request->uri() . " \r\n";
+                echo $request->header('Sec-Fetch-User') . "\t". $request->header('Sec-Fetch-Mode') .  " \r\n";
+             
+               
+                if(!is_null($request->header('Sec-Fetch-User')) || $request->header('Sec-Fetch-Mode') == 'cors' || $request->header('Upgrade-Insecure-Requests'))
                 {
 
+                    
                     $response = $this->handle($request);
 
-                    $response = call_user_func( $callback,  $request, new OutgoingResponse($response));
+                    $response = call_user_func( $callback,  $request, $response);
+
+                    $response = (string) $response->send();
+                }  
+                else
+                {
+                    $response = Response::images()->send();
                     
-                
-                    if ( !$response || !$response instanceof OutgoingResponse )
-                    {
-                        $response = OutgoingResponse::error( 404 );
-                    }
-        
                 }
+
+               
+                // if($request->header('Sec-Fetch-Mode') == 'no-cors')
+                // {
+
+
+                    
+                // }
+
+                
             }
           
-        
-
-            
-
-           
-            $response = (string) $response;
-
             stream_socket_sendto($client, $response, STREAM_OOB);
 
             stream_socket_shutdown($client, STREAM_SHUT_WR);
 
             fclose($client);
-
-           
-            
-          
-           
-          
-            
-        
-               
+    
         }
-
-       
+  
     }
 
 

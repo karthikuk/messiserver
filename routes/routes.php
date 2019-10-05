@@ -14,6 +14,10 @@ Route::get('/', function () {
         'name' => "karthi",
         'age' => "18",
     );
+
+
+  
+    //exit;
     
     return view('layouts.layout', $data);
 });
@@ -45,11 +49,23 @@ Route::patch('/patchPizza',"App\Controllers\Pizza\PizzaController::patchPizza");
 
 Route::post('/postPizza', function () {
 
+ 
     $input = Request::input();
 
-    var_dump($input);
+   
+    return Response::redirect('/products');
+    
+    // ob_flush();
+    // flush();
 
-    Response::redirect('/products');
+    //return view('layouts.layout', ['body' => 'products']);
+    //echo "<h1> Welcome </h1>";
+
+
+
+    // return json_encode($input);
+    
+    // /
     //echo 'redirect::>/products';   
 });
 
@@ -58,3 +74,5 @@ Route::post('/postPizza', function () {
 
 
 
+
+?>

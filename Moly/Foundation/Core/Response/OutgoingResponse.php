@@ -1,5 +1,6 @@
 <?php
 namespace Moly\Server\Response;
+use Moly\Supports\Facades\Request;
 
 
 class OutgoingResponse
@@ -7,6 +8,8 @@ class OutgoingResponse
    
 
     protected $response;
+
+    protected $headerLines = [];
 
     protected static $statusCodes = [  
         // Informational 1xx
@@ -63,10 +66,10 @@ class OutgoingResponse
     ];
 
     protected $status = 200;  
-    protected $body= null;  
+    protected $body = null;  
     protected $headers = [];  
 
-    public function __construct($body = null, $status = null )
+    public function __construct($status = null, $body = null)
     {
         if ( !is_null( $status ) )
         {
@@ -75,11 +78,13 @@ class OutgoingResponse
 
         $this->body = $body;
 
-      
-        if(gettype($this->body) == 'array')
-        {   
-            $this->body = json_encode($this->body);
-        }
+        $this->headerLines = [];
+
+        $this->headerLines[] = "HTTP/1.1 ".$this->status." ".static::$statusCodes[$this->status];
+
+        $this->header( 'Content-Type', 'text/html; charset=utf-8');
+        
+        $this->header( 'Server', 'MessiServer/1.0.0-Beta');
     }
 
     public function header( $key, $value )  
@@ -87,41 +92,102 @@ class OutgoingResponse
         $this->headers[ucfirst($key)] = $value;
     }
 
+    public function body()
+    {
+        return $this->body;
+    }
+
     public static function error($code)
     {
         return self::$statusCodes[$code];
     }
 
-    public function buildHeaderString()  
+    protected function buildHeaderString()  
     {
-        $lines = [];
-
-     
-        $lines[] = "HTTP/1.1 ".$this->status." ".static::$statusCodes[$this->status];
-
-    
+   
         foreach( $this->headers as $key => $value )
         {
-            $lines[] = $key.": ".$value;
+            $this->headerLines[] = $key.": ".$value;
         }
-        
-        return implode( " \r\n", $lines )."\r\n\r\n";
+
+        return implode( " \r\n",  $this->headerLines )."\r\n\r\n";
     }
 
-    public function redirect($uri, $permanent = false)
+    public function redirect($uri = null, $code = 302)
     {
-        $baseUrl = '127.0.0.1:8000';
-
-        $uri = $baseUrl . $uri;
-
-        header('Location: ' . $uri, true, 302);
-
-      
+        $this->headerLines[0] = "HTTP/1.1 302 Found";
+        $this->header("Accept", 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3');
+        $this->header("Host", 'http://192.168.2.53:8000');
+        $this->header("Location", "http://192.168.2.53:8000$uri");
+        return $this;
     }
 
 
 
-    public function __toString()  
+    public function make($status = 200,$contents = null)
+    {
+        if($status) $this->status = $status;
+
+        if($contents) $this->body = $contents;
+
+        
+        $this->responseInstanceOf();
+
+        return $this;
+    }
+
+    protected function responseInstanceOf()
+    {
+        if(gettype($this->body) == 'array')
+        {  
+            $this->toJson();
+        }   
+    }
+
+    public function toJson()
+    {
+        $this->body = json_encode($this->body);
+       // $this->header('Content-Length', strlen($this->body));
+        $this->header('Content-Type', 'application/json; charset=utf-8');
+        $this->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function images()
+    {
+    
+
+        $file = 'C:\xampp\htdocs\Php\1-b/1.jpg';
+       // $this->header("Accept", 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3');
+        $this->header('Content-Type', 'image/jpeg');
+        $this->header("Content-Length", filesize($file) );
+        $this->header('Connection', 'close');
+        $this->header('Host', 'http://192.168.2.53:8000');
+
+        //$fp = @fopen('C:\xampp\htdocs\Php\1-b/1.jpg', 'rb');
+        //$this->body = file_get_contents('C:\xampp\htdocs\Php\1-b/1.jpg');
+        //readfile('C:\xampp\htdocs\Php\1-b/1.jpg');
+
+        // $fp = fopen('C:\xampp\htdocs\Php\1-b/1.jpg', 'w');
+        // fwrite($fp, '1');
+        // fwrite($fp, '23');
+        // fclose($fp);
+
+       
+       
+       // $this->body = file_get_contents($file);
+       
+
+        return $this;
+    }
+
+   
+
+    public function send()
+    {
+        return $this->toString();
+    }
+
+    protected function toString()  
     {
         return $this->buildHeaderString().$this->body;
     }

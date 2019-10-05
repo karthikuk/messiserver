@@ -3,6 +3,7 @@ namespace Moly\Core\View;
 
 use Moly\Server\Response\OutgoingResponse;
 use Moly\Supports\Facades\Request;
+use Moly\Supports\Facades\Response;
 
 class View {
 
@@ -34,7 +35,7 @@ class View {
 
         ob_start();
        
-        return $this->viewWithResponse($view, $data);
+        return Response::make(200, $this->viewWithResponse($view, $data));
       
     }
 
@@ -54,7 +55,7 @@ class View {
         {
             return include $view;
 
-            ob_get_clean();
+            ob_get_clean();    
         }
        
     }

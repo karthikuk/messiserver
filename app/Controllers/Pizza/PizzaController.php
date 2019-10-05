@@ -7,6 +7,7 @@ use App\Factory\Pizza\PizzaFactory;
 
 use Moly\Supports\Facades\App;
 use Moly\Supports\Facades\Request;
+use Moly\Supports\Facades\Response;
 
 class PizzaController extends Controller{
 
@@ -50,7 +51,12 @@ class PizzaController extends Controller{
 
     public function putpizza($id)
     {
-        dd($id);
+        $input = Request::input();
+        return [
+            'type' => 'Putting',
+            'input' => $input
+        ];
+        //dd($id);
     }
 
     public function patchPizza(Request $request)
