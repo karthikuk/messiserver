@@ -92,6 +92,11 @@ class OutgoingResponse
         $this->headers[ucfirst($key)] = $value;
     }
 
+    public function headers()  
+    {
+        return $this->headers;
+    }
+
     public function body()
     {
         return $this->body;
@@ -152,35 +157,48 @@ class OutgoingResponse
         $this->header('Access-Control-Allow-Origin', '*');
     }
 
-    public function images()
+    public function resources($file = null)
     {
-    
 
-        $file = 'C:\xampp\htdocs\Php\1-b/1.jpg';
-       // $this->header("Accept", 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3');
-        $this->header('Content-Type', 'image/jpeg');
+        if(!@file_exists($file))
+        {
+            $this->headerLines[0] = "HTTP/1.1 404 Not Found";
+
+            $this->body = '';
+
+            return $this;
+        }
+        $this->header('Content-Type', mime_content_type($file));
+        
         $this->header("Content-Length", filesize($file) );
+        
         $this->header('Connection', 'close');
+        
         $this->header('Host', 'http://192.168.2.53:8000');
-
-        //$fp = @fopen('C:\xampp\htdocs\Php\1-b/1.jpg', 'rb');
-        //$this->body = file_get_contents('C:\xampp\htdocs\Php\1-b/1.jpg');
-        //readfile('C:\xampp\htdocs\Php\1-b/1.jpg');
-
-        // $fp = fopen('C:\xampp\htdocs\Php\1-b/1.jpg', 'w');
-        // fwrite($fp, '1');
-        // fwrite($fp, '23');
-        // fclose($fp);
-
-       
-       
-       // $this->body = file_get_contents($file);
-       
+        
+        $this->body = file_get_contents($file);
 
         return $this;
     }
 
-   
+    public function stream($file = null)
+    {
+
+        $this->header('Content-Description', 'File Transfer');
+        $this->header('Content-Type','application/octet-stream');
+        $this->header('Content-Disposition','attachment; filename="'.basename($file).'"');
+        $this->header('Expires','0');
+        $this->header('Cache-Control','must-revalidate');
+        $this->header('Pragma','public');
+        $this->header('Content-Length', filesize($file));
+        $this->body = file_get_contents($file);
+        return $this;
+    }
+
+    protected function resourceHeaders($file)
+    {
+        
+    }
 
     public function send()
     {

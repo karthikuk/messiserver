@@ -10,4 +10,7 @@
   <input type="submit" name="submit" />
 </form> 
 
+<a id="downloadLink" href="http://192.168.2.53:8000/getFile" target="_blank" 
+type="application/octet-stream" >click here</a>
+
 

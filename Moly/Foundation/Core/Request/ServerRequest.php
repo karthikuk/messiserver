@@ -16,8 +16,6 @@ abstract class ServerRequest  {
 
         parse_str(file_get_contents("php://input"),$requests);
 
-     
-
         $this->inbuildServer = true;
 
         $this->rawHeaders = $header;

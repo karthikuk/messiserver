@@ -153,6 +153,7 @@ class Router implements RouterInterface
     
         $uri = $request->uri();
 
+        
 
         $request = $this->givenUriRequest($uri);
     

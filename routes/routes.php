@@ -30,6 +30,12 @@ Route::get('/products', function () {
 
 });
 
+Route::get('/getFile', function () {
+
+    return Response::stream("C:\\xampp\\htdocs\\Php\\1-b\\1.csv");
+
+});
+
 
 
 Route::get("/pizza/{choice}", "App\Controllers\Pizza\PizzaController::show");

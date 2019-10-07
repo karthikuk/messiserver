@@ -3,7 +3,6 @@
 
 use Moly\Server\MessiServer;
 
-
 require 'vendor/autoload.php';
 
 $app = require_once 'echo.php';
@@ -14,13 +13,11 @@ array_shift( $argv );
 $port = empty($argv) ? 80 : array_shift( $argv );
 
 
+$server = new MessiServer($app, '192.168.2.53', $port);
 
+$server->messiRouter($app->resolve("Moly\Core\Route\Router", true));
 
-$server = new MessiServer($app, '127.0.0.1', $port);
-
-
-
-$server->listen(function($request, $response) {   
+$server->listen(function($request, $response) {  
     return $response;
 });
 
