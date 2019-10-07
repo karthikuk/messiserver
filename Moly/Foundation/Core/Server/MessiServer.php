@@ -15,9 +15,7 @@ class MessiServer extends MServer
 
     protected $socket = null;  
 
-    protected static $app;
-
-    protected static $router;
+    protected $serverConfig;
 
     public function __construct($app, $host, $port)
     {
@@ -27,6 +25,8 @@ class MessiServer extends MServer
         $this->host = $host;    
 
         $this->port = (int) $port;
+
+        $this->makeConfig();
 
         $this->createStreamServer();
     }
@@ -49,7 +49,7 @@ class MessiServer extends MServer
             $this->requestHandlers($callback);
         }
 
-       fclose($this->socket);
+        fclose($this->socket);
   
     }
 }

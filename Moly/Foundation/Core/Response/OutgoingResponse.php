@@ -1,22 +1,21 @@
 <?php
 namespace Moly\Server\Response;
 use Moly\Supports\Facades\Request;
+use Moly\Server\Facades\MConfig;
+use Moly\Server\MServer;
 
 
 class OutgoingResponse
 {
-   
+   use VariousResponse;
 
     protected $response;
 
     protected $headerLines = [];
 
     protected static $statusCodes = [  
-        // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
-    
-        // Success 2xx
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -24,18 +23,13 @@ class OutgoingResponse
         204 => 'No Content',
         205 => 'Reset Content',
         206 => 'Partial Content',
-    
-        // Redirection 3xx
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
-        302 => 'Found', // 1.1
+        302 => 'Found', 
         303 => 'See Other',
         304 => 'Not Modified',
         305 => 'Use Proxy',
-        // 306 is deprecated but reserved
         307 => 'Temporary Redirect',
-    
-        // Client Error 4xx
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
@@ -54,8 +48,6 @@ class OutgoingResponse
         415 => 'Unsupported Media Type',
         416 => 'Requested Range Not Satisfiable',
         417 => 'Expectation Failed',
-    
-        // Server Error 5xx
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',
@@ -66,7 +58,9 @@ class OutgoingResponse
     ];
 
     protected $status = 200;  
+
     protected $body = null;  
+
     protected $headers = [];  
 
     public function __construct($status = null, $body = null)
@@ -120,10 +114,11 @@ class OutgoingResponse
 
     public function redirect($uri = null, $code = 302)
     {
+        $host = MConfig::hostwithport();
         $this->headerLines[0] = "HTTP/1.1 302 Found";
         $this->header("Accept", 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3');
-        $this->header("Host", 'http://192.168.2.53:8000');
-        $this->header("Location", "http://192.168.2.53:8000$uri");
+        $this->header("Host", $host);
+        $this->header("Location", "{$host}{$uri}");
         return $this;
     }
 
@@ -135,7 +130,6 @@ class OutgoingResponse
 
         if($contents) $this->body = $contents;
 
-        
         $this->responseInstanceOf();
 
         return $this;
@@ -157,29 +151,16 @@ class OutgoingResponse
         $this->header('Access-Control-Allow-Origin', '*');
     }
 
-    public function resources($file = null)
+    public function notFound()
     {
+        $this->headerLines[0] = "HTTP/1.1 404 Not Found";
 
-        if(!@file_exists($file))
-        {
-            $this->headerLines[0] = "HTTP/1.1 404 Not Found";
-
-            $this->body = '';
-
-            return $this;
-        }
-        $this->header('Content-Type', mime_content_type($file));
-        
-        $this->header("Content-Length", filesize($file) );
-        
-        $this->header('Connection', 'close');
-        
-        $this->header('Host', 'http://192.168.2.53:8000');
-        
-        $this->body = file_get_contents($file);
+        $this->body = '';
 
         return $this;
     }
+
+    
 
     public function stream($file = null)
     {

@@ -4,6 +4,7 @@ namespace Moly\Server\Request;
 
 class IncomingRequest extends ServerRequest    {
 
+    use RequestCaster;
 
     protected $uri = null;  
 
@@ -124,7 +125,7 @@ class IncomingRequest extends ServerRequest    {
         return $this->headers[$key];
     }
 
-
+ 
     public function __get($name)
     {
         return $this->$name;

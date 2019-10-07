@@ -38,29 +38,20 @@ class HandleResponse implements HandleResponseContract
 
     protected function makeResponse() 
     {
-
         
-        if(!is_null($this->_serverRequest->header('Sec-Fetch-User')) 
-                || $this->_serverRequest->header('Sec-Fetch-Mode') == 'cors' 
-                || $this->_serverRequest->header('Upgrade-Insecure-Requests'))
+    
+        if($this->_serverRequest->isRoute())
         {
-  
-            $this->_serverResponse = MessiRouter::instance()
-                                                ->router()
-                                                ->next($this->_serverRequest);
-
-            
-                                 
+            $this->_serverResponse =  MServer::router()->next($this->_serverRequest);
+               
             $this->_serverResponse = call_user_func( $this->_callback ,  $this->serverRequest(),  $this->_serverResponse);
-        }  
+        }
         else
         {
-
-            $this->_serverResponse = $this->multipleResources($this->_serverRequest);
-
-        }  
+            $this->_serverResponse = $this->resolveAssets($this->_serverRequest);
+        }
+       
       
-     
         return $this;
     }
 
@@ -75,16 +66,14 @@ class HandleResponse implements HandleResponseContract
         return $this->_serverResponse;
     }
 
-    protected function multipleResources(?ServerRequest $request)
+    protected function resolveAssets(?ServerRequest $request)
     {
-        $serverPath = "C:\\xampp\\htdocs\\Php\\1-b\\";
+        
 
-        $resource =  explode("/", $request->uri());
+        $resource =  $request->uri();
 
-        $resource =  array_pop($resource);
       
-        return Response::resources($serverPath.$resource);
-
+        return Response::resources($resource);
     }
    
     

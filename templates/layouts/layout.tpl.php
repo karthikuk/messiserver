@@ -6,8 +6,8 @@
   <title>Pizza Order</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://192.168.2.53:8000/templates/assets/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <style>
@@ -18,6 +18,9 @@
     .sidenav {
       background-color: #f1f1f1;
       height: 100%;
+    }
+    .color-red {
+      color:red;
     }
         
     /* On small screens, set height to 'auto' for the grid */
@@ -40,7 +43,7 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Dashboard</a></li>
+        <li class="active"><a href="#" class ="color-red">Dashboard</a></li>
         <li><a href="#">Age</a></li>
         <li><a href="#">Gender</a></li>
         <li><a href="#">Geo</a></li>

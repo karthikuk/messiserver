@@ -10,7 +10,7 @@ use Moly\Supports\Facades\Route;
 Route::get('/', function () {
 
     $data = array(
-        "body" => 'dashboard',
+        "body" => 'pages/dashboard',
         'name' => "karthi",
         'age' => "18",
     );
@@ -19,22 +19,39 @@ Route::get('/', function () {
   
     //exit;
     
-    return view('layouts.layout', $data);
+    return view('layouts.index', $data);
 });
 
+
+Route::get('/login', function () {
+    return view('layouts.index', ['body' => 'pages/login']);
+});
+
+Route::get('/register', function () {
+    return view('layouts.index', ['body' => 'pages/register']);
+});
+
+Route::get('/forget-password', function () {
+    return view('layouts.index', ['body' => 'pages/forgot-password']);
+});
+
+Route::get('/404', function () {
+    return view('layouts.index', ['body' => 'pages/404']);
+});
+
+Route::get('/tables', function () {
+    return view('layouts.index', ['body' => 'pages/404']);
+});
 
 
 Route::get('/products', function () {
-
-    return view('layouts.layout', ['body' => 'products']);
-
+    return view('layouts.index', ['body' => 'pages/products']);
 });
 
-Route::get('/getFile', function () {
-
-    return Response::stream("C:\\xampp\\htdocs\\Php\\1-b\\1.csv");
-
+Route::get('/productEdit/{product}', function () {
+    return view('layouts.index', ['body' => 'pizzaedit']);
 });
+
 
 
 
@@ -42,9 +59,7 @@ Route::get("/pizza/{choice}", "App\Controllers\Pizza\PizzaController::show");
 
 Route::get("/hello/{choice}", "App\Controllers\Pizza\PizzaController::hello");
 
-Route::get('/productEdit/{product}', function () {
-    return view('layouts.layout', ['body' => 'pizzaedit']);
-});
+
 
 Route::put('/putPizza/{id}',"App\Controllers\Pizza\PizzaController::putPizza");
 
@@ -55,25 +70,19 @@ Route::patch('/patchPizza',"App\Controllers\Pizza\PizzaController::patchPizza");
 
 Route::post('/postPizza', function () {
 
- 
     $input = Request::input();
 
-   
-    return Response::redirect('/products');
-    
-    // ob_flush();
-    // flush();
+    return Response::redirect('/products');     
 
-    //return view('layouts.layout', ['body' => 'products']);
-    //echo "<h1> Welcome </h1>";
-
-
-
-    // return json_encode($input);
-    
-    // /
-    //echo 'redirect::>/products';   
 });
+
+
+Route::get('/getFile', function () {
+
+    return Response::stream("C:\\xampp\\htdocs\\Php\\1-b\\1.csv");
+    
+});
+
 
 
 

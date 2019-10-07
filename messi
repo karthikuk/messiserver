@@ -15,9 +15,37 @@ $port = empty($argv) ? 80 : array_shift( $argv );
 
 $server = new MessiServer($app, '192.168.2.53', $port);
 
+
+
 $server->messiRouter($app->resolve("Moly\Core\Route\Router", true));
+
+
+$server->config(include 'messiConfig.php');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 $server->listen(function($request, $response) {  
     return $response;
 });
+
+
+
+
+
+
+
+
 

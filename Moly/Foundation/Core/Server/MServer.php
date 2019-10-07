@@ -5,10 +5,15 @@ use Moly\Server\Contracts\ClientContract;
 use Moly\Server\Facades\Client;
 use Moly\Server\Facades\HandleRequest;
 use Moly\Server\Facades\MRouter;
+use Moly\Server\Facades\MConfig;
 use Moly\Server\Handler\ServerHandler;
 
 class MServer 
 {
+
+    protected static $app;
+
+    protected static $router;
 
     protected $_client = null;
 
@@ -20,8 +25,25 @@ class MServer
     
     protected $_handler = null;
 
-
     public function __construct(){}
+
+
+    protected function makeConfig()
+    {
+        MessiServerConfig::instance([
+            'host' => $this->host,
+            'runningport' => $this->port,
+        ]);
+    }
+
+    public function config(array $config = [])
+    {
+
+        MConfig::config($config);
+       
+        return $this;
+    }
+
 
     protected function messiApplication($app)
     {
@@ -70,6 +92,11 @@ class MServer
         $this->_writeStream = new WriteStream($socket, $buffer);
 
         return $this->_writeStream->doWrite();
+    }
+
+    public static function __callStatic($name, $arguments)
+    {
+        return $this->$name(...$arguments);
     }
 
 }

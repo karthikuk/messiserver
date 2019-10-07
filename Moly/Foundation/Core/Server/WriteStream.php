@@ -35,11 +35,15 @@ class WriteStream
     {
         @fwrite($this->socket, $this->buffer);
 
+        //stream_socket_sendto($this->socket, $this->buffer, STREAM_OOB);
+
         return $this;
     }
 
     protected function close() : self
     {
+        stream_socket_shutdown ($this->socket , STREAM_SHUT_WR );
+
         @fclose($this->socket);
 
         return $this;
