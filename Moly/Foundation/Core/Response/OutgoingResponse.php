@@ -146,7 +146,7 @@ class OutgoingResponse
     public function toJson()
     {
         $this->body = json_encode($this->body);
-       // $this->header('Content-Length', strlen($this->body));
+        $this->header('Content-Length', strlen($this->body));
         $this->header('Content-Type', 'application/json; charset=utf-8');
         $this->header('Access-Control-Allow-Origin', '*');
     }

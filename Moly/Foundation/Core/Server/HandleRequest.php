@@ -27,16 +27,23 @@ class HandleRequest implements HandleRequestContract
 
     public function handle(Callable $clientAbstract, $callback = null)
     {
-       
-        $this->_client = $clientAbstract();
+        try {
 
-        $this->_callback = $callback;
+            $this->_client = $clientAbstract();
 
-        $this->makeRequest();
+            $this->_callback = $callback;
+    
+            $this->makeRequest();
+    
+            $this->whatIncoming();
+    
+            $this->next();
 
-        $this->whatIncoming();
-
-        $this->next();
+        } catch (\Throwable $th) {
+            var_dump($th);
+            
+        }
+        
 
         return $this;
     }

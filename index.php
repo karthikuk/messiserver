@@ -15,6 +15,12 @@ require 'vendor/autoload.php';
 $app = require 'bootstrap/bootstrap.php';
 
 
+$s = serialize($app);
+file_put_contents('store', $s);
+
+
+$s = file_get_contents('store');
+$a = unserialize($s);
 
 
 

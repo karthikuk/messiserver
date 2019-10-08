@@ -16,9 +16,6 @@ Route::get('/', function () {
     );
 
 
-  
-    //exit;
-    
     return view('layouts.index', $data);
 });
 
@@ -78,9 +75,7 @@ Route::post('/postPizza', function () {
 
 
 Route::get('/getFile', function () {
-
     return Response::stream("C:\\xampp\\htdocs\\Php\\1-b\\1.csv");
-    
 });
 
 
