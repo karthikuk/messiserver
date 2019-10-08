@@ -19,8 +19,9 @@ class MakeClient implements ClientContract
 
     public function accept($socket) : ClientContract
     {
-        $this->_clientResource = stream_socket_accept($socket);
-
+        
+        $this->_clientResource = @stream_socket_accept($socket,-1);
+        
         return $this->receive();
     }
 

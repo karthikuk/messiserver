@@ -19,7 +19,6 @@ trait VariousResponse
             return $this->notFound();
         }
 
-     
         $this->header('Content-Type', implode(";",(new MimeTypes)->getMimeTypes($path["extension"])));
         
         $this->header("Content-Length", filesize($file) );
@@ -29,6 +28,17 @@ trait VariousResponse
         $this->header('Host', MConfig::hostwithport());
         
         $this->body = file_get_contents($file);
+
+        return $this;
+    }
+
+    public function stackTrace(string $exceptions)
+    {
+        $this->header('Content-Type', 'text/plain');
+    
+        $this->header('Host', MConfig::hostwithport());
+        
+        $this->body = $exceptions;
 
         return $this;
     }

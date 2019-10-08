@@ -46,6 +46,8 @@ class MessiServer extends MServer
     {
 
         while (true) {
+
+          
             $this->requestHandlers($callback);
         }
 

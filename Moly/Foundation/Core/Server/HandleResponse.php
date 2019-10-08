@@ -39,19 +39,27 @@ class HandleResponse implements HandleResponseContract
     protected function makeResponse() 
     {
         
-    
-        if($this->_serverRequest->isRoute())
+        try 
         {
-            $this->_serverResponse =  MServer::router()->next($this->_serverRequest);
-               
-            $this->_serverResponse = call_user_func( $this->_callback ,  $this->serverRequest(),  $this->_serverResponse);
-        }
-        else
+            if($this->_serverRequest->isRoute())
+            {
+          
+                $this->_serverResponse = call_user_func( 
+                                            $this->_callback ,  
+                                            $this->serverRequest(),  
+                                            MServer::router()->next($this->_serverRequest));
+            }
+            else
+            {
+                $this->_serverResponse = $this->resolveAssets($this->_serverRequest);
+            }
+        } 
+        catch (\Throwable $th) 
         {
-            $this->_serverResponse = $this->resolveAssets($this->_serverRequest);
+            $this->_serverResponse = Response::stackTrace($th);
         }
+        
        
-      
         return $this;
     }
 
@@ -68,11 +76,8 @@ class HandleResponse implements HandleResponseContract
 
     protected function resolveAssets(?ServerRequest $request)
     {
-        
-
         $resource =  $request->uri();
 
-      
         return Response::resources($resource);
     }
    

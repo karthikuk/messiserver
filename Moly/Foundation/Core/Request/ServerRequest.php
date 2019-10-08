@@ -1,9 +1,10 @@
 <?php
 namespace Moly\Server\Request;
+use Moly\Contracts\ServerRequestInterface;
 
 
 
-abstract class ServerRequest  {
+abstract class ServerRequest  implements ServerRequestInterface{
 
     protected $inbuildServer = false;
 
@@ -91,7 +92,6 @@ abstract class ServerRequest  {
                 if($line) $this->parseParameters($line);
             }
 
-           // echo $line ." \r \n";
         }   
 
         return $this;

@@ -1,11 +1,13 @@
 <?php
 namespace Moly\Contracts;
 
+use Moly\Server\Request\ServerRequest;
+
 interface ServerRequestInterface{
 
     public function mergeInputRequests();
 
-    public function input(string $val =  null);
+    public function input();
    
     public function isEmpty();
     
@@ -13,7 +15,7 @@ interface ServerRequestInterface{
     
     public function uri();
   
-    public function setInstance(ServerRequestInterface $instance);
+    public function setInstance(ServerRequest $instance);
     
     public function getInstance();
     

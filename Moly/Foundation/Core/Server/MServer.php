@@ -78,11 +78,12 @@ class MServer
     protected function requestHandlers($callback = null)
     {
         
+       
         $this->_handler = (new ServerHandler($this->socket))->handle(function() {
             return null;
         }, $callback);
-        
-
+       
+    
         $this->writeStream($this->_handler->client()->resource(), (string) $this->_handler->response()->send());
 
     }
